@@ -31,31 +31,52 @@ app.post("/generate-recipe", async (req, res) => {
     const recipe = extractJson(aiText);
 
     if (!validateRecipe(recipe)) {
-      return res.status(500).json({
+    return res.status(500).json({
         success: false,
-        error: "AI returned invalid recipe format",
-      });
+        error: "AI returned an invalid recipe format.",
+    });
+    }
+
+    // Check for empty arrays
+    if (
+    !recipe.steps?.length ||
+    !recipe.ingredients?.length
+    ) {
+    return res.status(500).json({
+        success: false,
+        error: "AI returned an empty recipe.",
+    });
     }
 
     res.json({
-      success: true,
-      recipe,
+    success: true,
+    recipe,
     });
 
-  } catch (err) {
-  console.error("===== ERROR =====");
+    } catch (err) {
   console.error(err);
-  console.error("Message:", err.message);
-  console.error("Stack:", err.stack);
 
-  res.status(500).json({
+  if (err.message === "Malformed JSON") {
+    return res.status(500).json({
+      success: false,
+      error: "The AI returned invalid JSON. Please try again.",
+    });
+  }
+
+  if (err.message === "No JSON") {
+    return res.status(500).json({
+      success: false,
+      error: "The AI did not return JSON. Please try again.",
+    });
+  }
+
+  return res.status(500).json({
     success: false,
-    error: err.message,
+    error: "Unable to generate recipe. Please try again.",
   });
-}
+    }
+
 });
-
-
 
 const PORT = process.env.PORT || 5000;
 

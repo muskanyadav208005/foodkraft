@@ -1,6 +1,7 @@
-import { useState } from "react";
+
 import { generateRecipe } from "../services/api";
 import RecipeCard from "./RecipeCard";
+import { useRef, useState } from "react";
 
 
 function IngredientInput() {
@@ -8,9 +9,11 @@ function IngredientInput() {
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const requestId = useRef(0);
   
 
   const handleSubmit = async () => {
+    const currentRequest = ++requestId.current;
   if (!ingredients.trim()) {
     setError("Please enter some ingredients.");
     return;
@@ -21,7 +24,9 @@ function IngredientInput() {
 
   try {
     const data = await generateRecipe(ingredients);
+    if (currentRequest === requestId.current) {
     setRecipe(data.recipe);
+}
   } catch (err) {
     setError(err.message || "Failed to generate recipe.");
   } finally {
@@ -43,9 +48,15 @@ function IngredientInput() {
         {loading ? "Generating..." : "Generate Recipe"}
         </button>
         {error && (
+            <div>
         <p style={{ color: "red" ,marginTop: "10px"}}>
+            
             {error}
         </p>
+        <button onClick={handleSubmit}>
+      Retry
+    </button>
+        </div>
         )}
         {!recipe && !loading && (
         <p style={{ marginTop: "20px" }}>

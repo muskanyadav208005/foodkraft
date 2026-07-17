@@ -1,11 +1,19 @@
 function extractJson(text) {
-  const match = text.match(/\{[\s\S]*\}/);
+  try {
+    const match = text.match(/\{[\s\S]*\}/);
 
-  if (!match) {
-    throw new Error("No JSON found in AI response");
+    if (!match) {
+      throw new Error("No JSON");
+    }
+
+    return JSON.parse(match[0]);
+  } catch (err) {
+    if (err.message === "No JSON") {
+      throw err;
+    }
+
+    throw new Error("Malformed JSON");
   }
-
-  return JSON.parse(match[0]);
 }
 
 module.exports = extractJson;
