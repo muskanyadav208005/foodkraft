@@ -1,17 +1,20 @@
 import { useState } from "react";
+import { generateRecipe } from "../services/api";
 
 function IngredientInput() {
-
   const [ingredients, setIngredients] = useState("");
 
-  const handleSubmit = () => {
-    console.log("Ingredients:", ingredients);
+  const handleSubmit = async () => {
+    try {
+      const data = await generateRecipe(ingredients);
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
   };
-
 
   return (
     <div>
-
       <textarea
         value={ingredients}
         onChange={(e) => setIngredients(e.target.value)}
@@ -23,7 +26,6 @@ function IngredientInput() {
       <button onClick={handleSubmit}>
         Generate Recipe
       </button>
-
     </div>
   );
 }
