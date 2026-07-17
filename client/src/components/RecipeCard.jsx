@@ -49,6 +49,19 @@ function RecipeCard({ recipe }) {
                 </li>
             ))}
             </ul>
+        <h3>Ingredient Swaps</h3>
+
+        {recipe.ingredientSwaps.length === 0 ? (
+        <p>No suggested swaps.</p>
+        ) : (
+        <ul>
+            {recipe.ingredientSwaps.map((swap, index) => (
+            <li key={index}>
+                <strong>{swap.from}</strong> → {swap.to}
+            </li>
+            ))}
+        </ul>
+        )}
 
       <h3>Instructions</h3>
 
