@@ -8,6 +8,7 @@ function IngredientInput() {
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  
 
   const handleSubmit = async () => {
   if (!ingredients.trim()) {
@@ -22,7 +23,7 @@ function IngredientInput() {
     const data = await generateRecipe(ingredients);
     setRecipe(data.recipe);
   } catch (err) {
-    setError(err.message || "Failed to generate recipe");
+    setError(err.message || "Failed to generate recipe.");
   } finally {
     setLoading(false);
   }
@@ -42,8 +43,13 @@ function IngredientInput() {
         {loading ? "Generating..." : "Generate Recipe"}
         </button>
         {error && (
-        <p style={{ color: "red" }}>
+        <p style={{ color: "red" ,marginTop: "10px"}}>
             {error}
+        </p>
+        )}
+        {!recipe && !loading && (
+        <p style={{ marginTop: "20px" }}>
+            No recipe generated yet. Enter ingredients and click "Generate Recipe".
         </p>
         )}
       {recipe && <RecipeCard recipe={recipe} />}
