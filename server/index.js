@@ -1,3 +1,8 @@
+require("dotenv").config();
+
+const { generateRecipe } = require("./services/aiService");
+const extractJson = require("./utils/extractJson");
+const validateRecipe = require("./utils/validateRecipe");
 const express = require("express");
 const cors = require("cors");
 
@@ -10,25 +15,50 @@ app.get("/", (req, res) => {
   res.send("API is running");
 });
 
-app.post("/generate-recipe", (req, res) => {
-  const { ingredients } = req.body;
+app.post("/generate-recipe", async (req, res) => {
+  try {
+    const { ingredients } = req.body;
 
-  console.log("Received:", ingredients);
-
-  res.json({
-    success: true,
-    recipe: {
-      title: "Demo Recipe",
-      ingredients: ingredients.split(","),
-      instructions: [
-        "Mix everything.",
-        "Cook for 15 minutes.",
-        "Serve hot."
-      ]
+    if (!ingredients || ingredients.trim() === "") {
+      return res.status(400).json({
+        success: false,
+        error: "Ingredients are required",
+      });
     }
+
+    const aiText = await generateRecipe(ingredients);
+
+    const recipe = extractJson(aiText);
+
+    if (!validateRecipe(recipe)) {
+      return res.status(500).json({
+        success: false,
+        error: "AI returned invalid recipe format",
+      });
+    }
+
+    res.json({
+      success: true,
+      recipe,
+    });
+
+  } catch (err) {
+  console.error("===== ERROR =====");
+  console.error(err);
+  console.error("Message:", err.message);
+  console.error("Stack:", err.stack);
+
+  res.status(500).json({
+    success: false,
+    error: err.message,
   });
+}
 });
 
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
+
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

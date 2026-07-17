@@ -6,16 +6,27 @@ import RecipeCard from "./RecipeCard";
 function IngredientInput() {
   const [ingredients, setIngredients] = useState("");
   const [recipe, setRecipe] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async () => {
-    try {
-      const data = await generateRecipe(ingredients);
-      console.log(data);
-      setRecipe(data.recipe);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  if (!ingredients.trim()) {
+    setError("Please enter some ingredients.");
+    return;
+  }
+
+  setLoading(true);
+  setError("");
+
+  try {
+    const data = await generateRecipe(ingredients);
+    setRecipe(data.recipe);
+  } catch (err) {
+    setError(err.message || "Failed to generate recipe");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div>
@@ -27,9 +38,14 @@ function IngredientInput() {
 
       <br />
 
-      <button onClick={handleSubmit}>
-        Generate Recipe
-      </button>
+      <button onClick={handleSubmit} disabled={loading}>
+        {loading ? "Generating..." : "Generate Recipe"}
+        </button>
+        {error && (
+        <p style={{ color: "red" }}>
+            {error}
+        </p>
+        )}
       {recipe && <RecipeCard recipe={recipe} />}
     </div>
   );

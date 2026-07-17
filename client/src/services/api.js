@@ -1,7 +1,7 @@
 const API_URL = "http://localhost:5000";
 
 export async function generateRecipe(ingredients) {
-  const response = await fetch(`${API_URL}/generate-recipe`, {
+  const response = await fetch("http://localhost:5000/generate-recipe", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -9,9 +9,11 @@ export async function generateRecipe(ingredients) {
     body: JSON.stringify({ ingredients }),
   });
 
+  const data = await response.json();
+
   if (!response.ok) {
-    throw new Error("Failed to generate recipe");
+    throw new Error(data.error || "Failed to generate recipe");
   }
 
-  return response.json();
+  return data;
 }
