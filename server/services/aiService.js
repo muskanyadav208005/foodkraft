@@ -20,26 +20,31 @@ Do not return markdown.
 
 Do not explain anything.
 
+Quantity MUST be a number.
+
+Unit MUST be a separate field.
+
 The JSON schema is:
 
 {
-  "title": "string",
-  "servings": number,
-  "ingredients": [
-    {
-      "name": "string",
-      "quantity": "string"
-    }
-  ],
-  "steps": [
-    "string"
-  ],
-  "ingredientSwaps": [
-    {
-      "from": "string",
-      "to": "string"
-    }
-  ]
+"title":"string",
+"servings":2,
+"ingredients":[
+{
+"name":"string",
+"quantity":2,
+"unit":"cups"
+}
+],
+"steps":[
+"string"
+],
+"ingredientSwaps":[
+{
+"from":"string",
+"to":"string"
+}
+]
 }
 `,
       },

@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 function RecipeCard({ recipe }) {
+    const [servings, setServings] = useState(recipe.servings);
     const [completedSteps, setCompletedSteps] = useState([]);
     const toggleStep = (index) => {
     if (completedSteps.includes(index)) {
@@ -15,11 +16,36 @@ function RecipeCard({ recipe }) {
     <div style={{ marginTop: "30px" }}>
       <h2>{recipe.title}</h2>
 
+        <h3>
+        Servings
+
+        <button
+        onClick={() => setServings(Math.max(1, servings - 1))}
+        >
+        -
+        </button>
+
+        <span style={{ margin: "0 10px" }}>
+        {servings}
+        </span>
+
+        <button
+        onClick={() => setServings(servings + 1)}
+        >
+        +
+        </button>
+
+        </h3>
+
       <h3>Ingredients</h3>
                 <ul>
             {recipe.ingredients.map((item, index) => (
                 <li key={index}>
-                {item.quantity} {item.name}
+                    {((item.quantity / recipe.servings) * servings).toFixed(1)}
+                    {" "}
+                    {item.unit}
+                    {" "}
+                    {item.name}
                 </li>
             ))}
             </ul>
