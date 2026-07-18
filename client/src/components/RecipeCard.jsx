@@ -13,7 +13,11 @@ function RecipeCard({ recipe }) {
     }
 };
   return (
+    <div className="recipe-card">
     <div style={{ marginTop: "30px" }}>
+      <p className="disclaimer">
+  Generated using AI. Please verify ingredient quantities before cooking.
+</p>
       <h2>{recipe.title}</h2>
 
         <h3>
@@ -92,6 +96,7 @@ function RecipeCard({ recipe }) {
   </div>
 
     ))};
+</div>
 </div>
   );
 }
